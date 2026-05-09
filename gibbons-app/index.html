@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gibbons — La connaissance, sans chemin imposé.</title>
+  <meta name="description" content="Gibbons est une plateforme de micro-apprentissage par sauts cognitifs. Apprenez en 1 à 3 minutes par session — un insight, un déclic, à votre rythme." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #16a34a;
+      --orange: #ea580c;
+      --gray: #6b7280;
+      --dark: #111827;
+      --bg: #f9fafb;
+      --font: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ── Sélecteur de langue ── */
+    .lang-switcher {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+    .lang-btn {
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      border: 1.5px solid #d1d5db;
+      background: white;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .lang-btn:hover { border-color: var(--dark); color: var(--dark); }
+    .lang-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      margin-bottom: 1.75rem;
+    }
+    .logo-wrap img {
+      height: 120px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* ── Slogan ── */
+    .slogan {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 2.5rem;
+      max-width: 460px;
+      line-height: 1.65;
+    }
+
+    /* ── Zones ── */
+    .zones {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    .zone-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .zone-dot.explored { background: var(--green); }
+    .zone-dot.dense    { background: var(--orange); }
+    .zone-dot.unknown  { background: #d1d5db; }
+
+    /* ── CTA ── */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.25rem;
+      background: var(--dark);
+      color: white;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .cta:hover { background: #374151; }
+    .cta:focus-visible {
+      outline: 2px solid var(--dark);
+      outline-offset: 3px;
+    }
+
+    .soon {
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    footer {
+      position: fixed;
+      bottom: 1.25rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    /* ── i18n ── */
+    [data-lang="fr"] [data-en],
+    [data-lang="en"] [data-fr] { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Sélecteur de langue -->
+  <div class="lang-switcher" role="navigation" aria-label="Choix de la langue">
+    <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')" aria-pressed="true" lang="fr">FR</button>
+    <button class="lang-btn"        id="btn-en" onclick="setLang('en')" aria-pressed="false" lang="en">EN</button>
+  </div>
+
+  <div class="logo-wrap">
+    <img
+      src="public/logos/logo5small.png"
+      alt="Gibbons — La connaissance, sans chemin imposé."
+      width="800"
+      height="120"
+    />
+  </div>
+
+  <!-- Slogan -->
+  <p class="slogan">
+    <span data-fr>La connaissance, sans chemin imposé.</span>
+    <span data-en>Knowledge, without a prescribed path.</span>
+  </p>
+
+  <!-- Description -->
+  <p class="tagline">
+    <span data-fr>
+      Apprenez par sauts d'attention courts et intenses.<br />
+      Un insight, un déclic — en 1 à 3 minutes.
+    </span>
+    <span data-en>
+      Learn through short, intense cognitive leaps.<br />
+      One insight, one breakthrough — in 1 to 3 minutes.
+    </span>
+  </p>
+
+  <!-- Zones -->
+  <div class="zones" role="list" aria-label="Zones d'apprentissage">
+    <div class="zone" role="listitem">
+      <div class="zone-dot explored" aria-hidden="true"></div>
+      <span data-fr>Zone explorée</span>
+      <span data-en>Explored zone</span>
+    </div>
+    <div class="zone" role="listitem">
+      <div class="zone-dot dense" aria-hidden="true"></div>
+      <span data-fr>Zone dense</span>
+      <span data-en>Dense zone</span>
+    </div>
+    <div class="zone" role="listitem">
+      <div class="zone-dot unknown" aria-hidden="true"></div>
+      <span data-fr>Zone inconnue</span>
+      <span data-en>Unknown zone</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <a href="#" class="cta">
+    <span data-fr>Bientôt disponible</span>
+    <span data-en>Coming soon</span>
+    <span aria-hidden="true">→</span>
+  </a>
+
+  <p class="soon">
+    <span data-fr>La plateforme est en cours de construction.</span>
+    <span data-en>The platform is under construction.</span>
+  </p>
+
+  <footer>gibbons.fr — 2026</footer>
+
+  <script>
+    function setLang(lang) {
+      document.documentElement.setAttribute('data-lang', lang);
+      document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-fr').setAttribute('aria-pressed', lang === 'fr');
+      document.getElementById('btn-en').setAttribute('aria-pressed', lang === 'en');
+      document.documentElement.setAttribute('lang', lang);
+      // Mettre à jour le title et la meta description
+      if (lang === 'fr') {
+        document.title = 'Gibbons — La connaissance, sans chemin imposé.';
+      } else {
+        document.title = 'Gibbons — Knowledge, without a prescribed path.';
+      }
+    }
+
+    // Détecter la langue du navigateur au chargement
+    const browserLang = navigator.language?.startsWith('en') ? 'en' : 'fr';
+    setLang(browserLang);
+  </script>
+</body>
+</html>
