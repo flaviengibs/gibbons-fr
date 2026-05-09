@@ -1,18 +1,16 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
 import prettierConfig from 'eslint-config-prettier';
 
-// eslint-config-next exporte un tableau de configs plat
-const { default: nextConfig } = await import('eslint-config-next/core-web-vitals.js');
-
-const eslintConfig = defineConfig([
-  ...(Array.isArray(nextConfig) ? nextConfig : [nextConfig]),
+/** @type {import('eslint').Linter.Config[]} */
+const eslintConfig = [
+  {
+    ignores: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'node_modules/**'],
+  },
+  {
+    rules: {
+      '@next/next/no-html-link-for-pages': 'warn',
+    },
+  },
   prettierConfig,
-  globalIgnores([
-    '.next/**',
-    'out/**',
-    'build/**',
-    'next-env.d.ts',
-  ]),
-]);
+];
 
 export default eslintConfig;
