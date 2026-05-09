@@ -1,15 +1,13 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals.js';
-import nextTs from 'eslint-config-next/typescript.js';
 import prettierConfig from 'eslint-config-prettier';
 
+// eslint-config-next exporte un tableau de configs plat
+const { default: nextConfig } = await import('eslint-config-next/core-web-vitals.js');
+
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  ...(Array.isArray(nextConfig) ? nextConfig : [nextConfig]),
   prettierConfig,
-  // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
     '.next/**',
     'out/**',
     'build/**',
