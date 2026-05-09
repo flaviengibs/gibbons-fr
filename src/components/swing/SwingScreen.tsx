@@ -109,6 +109,7 @@ export function SwingScreen({ payload }: SwingScreenProps) {
             {swing.type === 'TYPE_C' && (
               <SwingTypeC
                 content={swing.content as SwingContentTypeC}
+                swingId={swing.id}
                 onComplete={handleComplete}
               />
             )}

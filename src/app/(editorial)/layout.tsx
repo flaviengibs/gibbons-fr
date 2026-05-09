@@ -35,7 +35,7 @@ export default async function EditorialLayout({ children }: EditorialLayoutProps
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logos/logo (5).png"
+                src="/logos/logo5small.png"
                 alt="Gibbons"
                 height={28}
                 style={{ height: '28px', width: 'auto' }}

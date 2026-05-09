@@ -53,6 +53,7 @@ model Swing {
   creator           User      @relation(fields: [creatorId], references: [id])
   isPublished       Boolean   @default(false)
   publishedAt       DateTime?
+  isUGC             Boolean   @default(false)  // true = créé par un utilisateur
   qualityScore      Float     @default(0.0)
   voteCount         Int       @default(0)
   editorialScore    Float     @default(0.0)  // Score éditorial (0.0–5.0)
@@ -66,6 +67,7 @@ model Swing {
   // Progression
   completions       SwingCompletion[]
   votes             SwingVote[]
+  answers           SwingAnswer[]
 
   @@index([branchId])
   @@index([isPublished])
@@ -121,6 +123,8 @@ model User {
   progress      LearnerProgress?
   completions   SwingCompletion[]
   votes         SwingVote[]
+  answers       SwingAnswer[]
+  points        UserPoints?
 }
 
 // ─── Progression ─────────────────────────────────────────────────────────────
@@ -159,6 +163,36 @@ model SwingVote {
 
   @@unique([userId, swingId])
   @@index([swingId])
+}
+
+// ─── Réponses aux exercices (TYPE_C) ─────────────────────────────────────────
+
+model SwingAnswer {
+  id           String   @id @default(cuid())
+  userId       String
+  swingId      String
+  answer       String   @db.Text
+  feedbackScore Float   @default(0.0)  // 0.0–1.0 (score de pertinence)
+  feedbackText String?  @db.Text
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+  swing        Swing    @relation(fields: [swingId], references: [id])
+
+  @@index([userId])
+  @@index([swingId])
+}
+
+// ─── Points et leaderboard ───────────────────────────────────────────────────
+
+model UserPoints {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  totalPoints  Int      @default(0)
+  weekPoints   Int      @default(0)   // Points de la semaine courante
+  weekStart    DateTime @default(now())
+  streak       Int      @default(0)   // Jours consécutifs d'activité
+  lastActiveAt DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 // ─── NextAuth ────────────────────────────────────────────────────────────────

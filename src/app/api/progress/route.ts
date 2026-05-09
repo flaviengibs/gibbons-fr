@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { selectBranches, type SwingEdgeInput } from '@/lib/navigation';
 import { computeZones } from '@/lib/zones';
+import { addPoints, computeSwingPoints } from '@/lib/points';
 import type { LearnerProgress, SwingBranch, BranchRelationType, SwingType } from '@/types/index';
 
 // ─── Mapping enums Prisma → TypeScript ───────────────────────────────────────
@@ -69,11 +70,22 @@ export async function POST(request: NextRequest) {
     }
 
     // upsert SwingCompletion (idempotent)
+    const wasAlreadyCompleted = await db.swingCompletion.findUnique({
+      where: { userId_swingId: { userId: learnerId, swingId } },
+      select: { id: true },
+    });
+
     await db.swingCompletion.upsert({
       where: { userId_swingId: { userId: learnerId, swingId } },
       create: { userId: learnerId, swingId },
-      update: {}, // ne rien modifier si déjà existant
+      update: {},
     });
+
+    // Attribuer des points seulement si c'est la première complétion
+    if (!wasAlreadyCompleted) {
+      const pts = computeSwingPoints(swing.type as SwingType);
+      await addPoints(learnerId, pts).catch(() => { /* non bloquant */ });
+    }
 
     // upsert LearnerProgress
     await db.learnerProgress.upsert({
