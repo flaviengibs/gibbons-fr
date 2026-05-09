@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { cookies } from 'next/headers';
-import type { LearnerProgress } from '@/types/index';
+import { db } from '@/lib/db';
 
 export default async function HomePage() {
   const session = await auth();
@@ -11,42 +10,26 @@ export default async function HomePage() {
     redirect('/login');
   }
 
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
+  const learnerId = session.user.userId;
 
-  let lastSwingId: string | null = null;
+  // Récupérer le dernier swing visité
+  const learnerProgress = await db.learnerProgress.findUnique({
+    where: { userId: learnerId },
+    select: { lastSwingId: true },
+  }).catch(() => null);
 
-  try {
-    const progressRes = await fetch(
-      `${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/api/progress`,
-      { headers: { Cookie: cookieHeader }, cache: 'no-store' },
-    );
-    if (progressRes.ok) {
-      const progress = (await progressRes.json()) as LearnerProgress;
-      lastSwingId = progress.lastSwingId ?? null;
-    }
-  } catch { /* continue sans progression */ }
-
-  if (lastSwingId) {
-    redirect(`/swing/${lastSwingId}`);
+  if (learnerProgress?.lastSwingId) {
+    redirect(`/swing/${learnerProgress.lastSwingId}`);
   }
 
-  let firstSwingId: string | null = null;
+  // Récupérer le premier swing publié
+  const firstSwing = await db.swing.findFirst({
+    where: { isPublished: true },
+    orderBy: { publishedAt: 'asc' },
+    select: { id: true },
+  }).catch(() => null);
 
-  try {
-    const swingsRes = await fetch(
-      `${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/api/swings?first=true`,
-      { headers: { Cookie: cookieHeader }, cache: 'no-store' },
-    );
-    if (swingsRes.ok) {
-      const data = (await swingsRes.json()) as { id: string } | { id: string }[];
-      if (Array.isArray(data) && data.length > 0) {
-        firstSwingId = data[0].id;
-      } else if (!Array.isArray(data) && (data as { id: string }).id) {
-        firstSwingId = (data as { id: string }).id;
-      }
-    }
-  } catch { /* continue sans premier swing */ }
+  const firstSwingId = firstSwing?.id ?? null;
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen px-6 py-12 text-center">
